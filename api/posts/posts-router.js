@@ -9,9 +9,8 @@ const {
     remove,
     findPostComments
 } = require("./posts-model");
-const err = { message: "whoops" }
 
-router.get("/api/posts", (req, res) => {
+router.get("/", (req, res) => {
     find().then(posts => {
         res.status(200).json(posts)
     }).catch(() => {
@@ -19,9 +18,8 @@ router.get("/api/posts", (req, res) => {
     })
 })
 
-router.get("/api/posts/:id", (req, res) => {
+router.get("/:id", (req, res) => {
     const { id } = req.params;
-    if (!id) return res.status(400).json(err)
     findById(id).then(post => {
         post ?
             res.status(200).json(post)
@@ -33,7 +31,7 @@ router.get("/api/posts/:id", (req, res) => {
     })
 })
 
-router.post("/api/posts", (req, res) => {
+router.post("/", (req, res) => {
     const { body } = req;
     if (!body.title || !body.contents) return res.status(400).json({ message: "Please provide title and contents for the post" })
     insert(body).then(post => {
@@ -43,7 +41,7 @@ router.post("/api/posts", (req, res) => {
     })
 }) 
 
-router.put("/api/post/:id", (req, res) => {
+router.put("/:id", (req, res) => {
     const { body, params: { id } } = req;
     if (!body.title || !body.contents || !id) return res.status(400).json({ message: "The post with the specified ID does not exist" })
     update(id, body).then(post => {
@@ -57,7 +55,7 @@ router.put("/api/post/:id", (req, res) => {
     })
 })
 
-router.delete("/api/post/:id", (req, res) => {
+router.delete("/:id", (req, res) => {
     const { id } = req.params;
     remove(id).then(post => {
         post ?
@@ -70,7 +68,7 @@ router.delete("/api/post/:id", (req, res) => {
     })
 })
 
-router.get("/api/post/:id/comments", (req, res) => {
+router.get("/:id/comments", (req, res) => {
     const { id } = req.params;
     findPostComments(id).then(comments => {
         comments ?
@@ -81,3 +79,5 @@ router.get("/api/post/:id/comments", (req, res) => {
         res.status(500).json({ message: "The comments information could not be retrieved" })
     })
 })
+
+module.exports = router;
